@@ -1,3 +1,9 @@
+# WASI libc "top half".
+
+The WASI libc "top half" is conceptually the upper half of a traditional libc
+implementation, consisting of C standard library and other relatively
+higher-level functionality.
+
 Code in the musl directory is based on musl revision
 b07d45eb01e900f0176894fdedab62285f5cb8be, which is v1.1.23, from
 git://git.musl-libc.org/musl.
