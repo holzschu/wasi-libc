@@ -261,6 +261,7 @@ override MUSL_OMIT_HEADERS += \
     "bits/kd.h" "bits/vt.h" "bits/soundcard.h" "bits/sem.h" \
     "bits/shm.h" "bits/msg.h" "bits/ipc.h" "bits/ptrace.h" \
     "bits/statfs.h" \
+    "bits/signal.h" "signal.h" "sys/signal.h" \
     "sys/vfs.h" \
     "sys/statvfs.h" \
     "syslog.h" "sys/syslog.h" \
