@@ -1,4 +1,3 @@
-#include <wasi/api.h>
 extern void __wasm_call_ctors(void);
 
 void _activate(void) {
