@@ -35,10 +35,6 @@ __cxa_finalize
 __des_setkey
 __do_des
 __duplocale
-__env_rm_add
-__env_rm_add
-__env_rm_add
-__env_rm_add
 __exp2f_data
 __exp_data
 __expo2
@@ -175,7 +171,6 @@ __powf_log2_data
 __prepare_for_exit
 __progname
 __progname_full
-__putenv
 __rand48_step
 __reallocarray
 __rem_pio2

@@ -2,6 +2,8 @@
 #include <string.h>
 #include <errno.h>
 
+/* a-Shell: we do not need this function. */
+/*
 void __env_rm_add(char *old, char *new)
 {
 	static char **env_alloced;
@@ -19,10 +21,22 @@ void __env_rm_add(char *old, char *new)
 	char **t = realloc(env_alloced, sizeof *t * (env_alloced_n+1));
 	if (!t) return;
 	(env_alloced = t)[env_alloced_n++] = new;
-}
+} */
 
 int setenv(const char *var, const char *value, int overwrite)
 {
+	// a-Shell: direct communication with ios_system:
+	__wasi_errno_t error = __wasi_ashell_setenv(var, strlen(var), value, strlen(value), overwrite);
+
+	if (error != 0) {
+		errno = error;
+		return -1;
+	}
+	
+	return 0;
+
+	// version without a-Shell:
+	/* 
 	char *s;
 	size_t l1, l2;
 
@@ -38,5 +52,5 @@ int setenv(const char *var, const char *value, int overwrite)
 	memcpy(s, var, l1);
 	s[l1] = '=';
 	memcpy(s+l1+1, value, l2+1);
-	return __putenv(s, l1, s);
+	return __putenv(s, l1, s); */
 }

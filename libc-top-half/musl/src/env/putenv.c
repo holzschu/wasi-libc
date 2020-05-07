@@ -2,6 +2,8 @@
 #include <string.h>
 #include <unistd.h>
 
+/* a-Shell: we do not need this function */ 
+/*
 static void dummy(char *old, char *new) {}
 weak_alias(dummy, __env_rm_add);
 
@@ -43,11 +45,13 @@ int __putenv(char *s, size_t l, char *r)
 oom:
 	free(r);
 	return -1;
-}
+} */
 
 int putenv(char *s)
 {
 	size_t l = __strchrnul(s, '=') - s;
 	if (!l || !s[l]) return unsetenv(s);
-	return __putenv(s, l, 0);
+	return setenv(s, l, 0); 
+	// without a-Shell:
+	// return __putenv(s, l, 0);
 }
