@@ -13,6 +13,9 @@ int chdir(const char *path)
 		errno = error;
 		return -1;
 	}
+
+	return 0;
+
 	// before iOS: 
 	// return syscall(SYS_chdir, path);
 }

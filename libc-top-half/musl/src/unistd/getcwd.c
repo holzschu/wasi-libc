@@ -22,6 +22,8 @@ char *getcwd(char *buf, size_t size)
 		errno = error;
 		return 0;
 	}
+
+	buf[bufused] = 0; 
    	   
 	/* 
 	long ret = syscall(SYS_getcwd, buf, size);
