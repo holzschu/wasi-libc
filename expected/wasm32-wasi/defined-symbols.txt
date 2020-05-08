@@ -148,6 +148,7 @@ __math_uflowf
 __math_xflow
 __math_xflowf
 __memrchr
+__mkostemps
 __mo_lookup
 __month_to_secs
 __newlocale
@@ -172,6 +173,7 @@ __prepare_for_exit
 __progname
 __progname_full
 __rand48_step
+__randname
 __reallocarray
 __rem_pio2
 __rem_pio2_large
@@ -362,6 +364,7 @@ ceill
 cexp
 cexpf
 cexpl
+chdir
 cimag
 cimagf
 cimagl
@@ -458,6 +461,7 @@ fabs
 fabsf
 fabsl
 faccessat
+fchdir
 fclose
 fcntl
 fcvt
@@ -573,6 +577,7 @@ getc
 getc_unlocked
 getchar
 getchar_unlocked
+getcwd
 getdate
 getdate_err
 getdelim
@@ -762,6 +767,16 @@ memrchr
 memset
 mkdir
 mkdirat
+mkdtemp
+mkostemp
+mkostemp64
+mkostemps
+mkostemps64
+mkstemp
+mkstemp64
+mkstemps
+mkstemps64
+mktemp
 mktime
 modf
 modff
@@ -981,6 +996,7 @@ swscanf
 symlink
 symlinkat
 sysconf
+system
 tan
 tanf
 tanh

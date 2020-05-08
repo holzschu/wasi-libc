@@ -1,15 +1,26 @@
 #include <unistd.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <spawn.h>
+// iOS: comment out non-necessary directories
+// #include <signal.h>
+// #include <sys/wait.h>
+// #include <spawn.h>
 #include <errno.h>
-#include "pthread_impl.h"
+// #include "pthread_impl.h"
 
 extern char **__environ;
 
 int system(const char *cmd)
 {
+	// iOS / a-Shell version: just call ios_system:
+	__wasi_errno_t error = __wasi_ashell_system(cmd, strlen(cmd)); 
+
+	if (error != 0) {
+		errno = error;
+		return -1;
+	}
+	return 0; 
+
+	/* Version without a-Shell: 
 	pid_t pid;
 	sigset_t old, reset;
 	struct sigaction sa = { .sa_handler = SIG_IGN }, oldint, oldquit;
@@ -43,4 +54,5 @@ int system(const char *cmd)
 
 	if (ret) errno = ret;
 	return status;
+	*/
 }

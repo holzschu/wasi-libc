@@ -135,6 +135,17 @@ LIBC_TOP_HALF_MUSL_SOURCES = \
         env/setenv.c \
         env/unsetenv.c \
         unistd/posix_close.c \
+        temp/__randname.c \
+        temp/mkdtemp.c \
+        temp/mkostemp.c \
+        temp/mkostemps.c \
+        temp/mkstemp.c \
+        temp/mkstemps.c \
+        temp/mktemp.c \
+        unistd/getcwd.c \
+        unistd/chdir.c \
+        unistd/fchdir.c \
+        process/system.c \
     ) \
     $(filter-out %/procfdname.c %/syscall.c %/syscall_ret.c %/vdso.c %/version.c, \
                  $(wildcard $(LIBC_TOP_HALF_MUSL_SRC_DIR)/internal/*.c)) \
