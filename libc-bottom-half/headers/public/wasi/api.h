@@ -2796,6 +2796,85 @@ __wasi_errno_t __wasi_ashell_unsetenv(
     __warn_unused_result__
 ));
 
+/**
+ * gets the value of the current directory
+ */
+__wasi_errno_t __wasi_ashell_getcwd(
+    /**
+     * The buffer to which to write the contents of the current directory
+     */
+    uint8_t * buf,
+
+    __wasi_size_t buf_len,
+
+    /**
+     * The number of bytes placed in the buffer.
+     */
+    __wasi_size_t *bufused
+	
+) __attribute__((
+    __import_module__("wasi_snapshot_preview1"),
+    __import_name__("ashell_getcwd"),
+    __warn_unused_result__
+));
+
+/**
+ * Changes the current directory 
+ * Note: This is the basis of chdir()
+ */
+__wasi_errno_t __wasi_ashell_chdir(
+    /**
+     * The name of the new directory
+     */
+    const char *path,
+
+    /**
+     * The length of the buffer pointed to by `path`.
+     */
+    size_t path_len
+
+) __attribute__((
+    __import_module__("wasi_snapshot_preview1"),
+    __import_name__("ashell_chdir"),
+    __warn_unused_result__
+));
+
+/**
+ * Changes the current directory
+ * Note: This is the basis of fchdir())
+ */
+__wasi_errno_t __wasi_ashell_fchdir(
+    /**
+     * File descriptor of new directory
+     */
+    const int fildes
+
+) __attribute__((
+    __import_module__("wasi_snapshot_preview1"),
+    __import_name__("ashell_fchdir"),
+    __warn_unused_result__
+));
+
+/**
+ * Executes a command using ios_system
+ * Note: This is the basis of system()
+ */
+__wasi_errno_t __wasi_ashell_system(
+    /**
+     * The content of the command
+     */
+    const char *command,
+
+    /**
+     * The length of the buffer pointed to by `command`.
+     */
+    size_t command_len
+
+) __attribute__((
+    __import_module__("wasi_snapshot_preview1"),
+    __import_name__("ashell_system"),
+    __warn_unused_result__
+));
 
 
 /** @} */
