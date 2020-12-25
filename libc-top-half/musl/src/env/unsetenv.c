@@ -3,23 +3,11 @@
 #include <errno.h>
 #include <unistd.h>
 
-// a-Shell: we do not need this function
-// static void dummy(char *old, char *new) {}
-// weak_alias(dummy, __env_rm_add);
+static void dummy(char *old, char *new) {}
+weak_alias(dummy, __env_rm_add);
 
 int unsetenv(const char *name)
 {
-	/* a-Shell: direct communication with the shell. */
-	__wasi_errno_t error = __wasi_ashell_unsetenv(name, strlen(name));
-
-	if (error != 0) {
-		errno = error;
-		return -1;
-	}
-	
-	return 0;
-
-	/* version without a-Shell:
 	size_t l = __strchrnul(name, '=') - name;
 	if (!l || name[l]) {
 		errno = EINVAL;
@@ -44,5 +32,4 @@ int unsetenv(const char *name)
 		if (eo != e) *eo = 0;
 	}
 	return 0;
-	*/
 }

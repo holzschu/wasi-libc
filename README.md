@@ -9,7 +9,7 @@ WASI Libc is sufficiently stable and usable for many purposes, as most of the
 POSIX-compatible APIs are stable, though it is continuing to evolve to better
 align with wasm and WASI.
 
-This fork of WASI Libc is adapted to run on a-Shell; system-based commands (getenv, setenv, mkstemp...) are forwarded to the iOS underlying system. 
+This fork of WASI Libc is adapted to run on a-Shell; system-based commands (cd, print, mkstemp...) are forwarded to the iOS underlying system. 
 
 ## Usage
 

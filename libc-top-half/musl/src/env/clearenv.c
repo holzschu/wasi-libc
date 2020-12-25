@@ -2,14 +2,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// a-Shell: not defined
-// static void dummy(char *old, char *new) {}
-// weak_alias(dummy, __env_rm_add);
+static void dummy(char *old, char *new) {}
+weak_alias(dummy, __env_rm_add);
 
 int clearenv()
 {
-	// a-Shell: not implemented. Too risky. 
-	/*
 #ifdef __wasilibc_unmodified_upstream // Lazy environment variable init.
 #else
 // This specialized header is included within the function body to arranges for
@@ -21,5 +18,4 @@ int clearenv()
 	__environ = 0;
 	if (e) while (*e) __env_rm_add(*e++, 0);
 	return 0;
-	*/
 }

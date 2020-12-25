@@ -2253,6 +2253,9 @@ __wasi_errno_t __wasi_path_filestat_get(
 /**
  * Adjust the timestamps of a file or directory.
  * Note: This is similar to `utimensat` in POSIX.
+ *
+ * a-Shell note: we keep seconds and nanoseconds because something is forcing back to 32 bits
+ * (even though __wasi_timestamp_t is 64 bits). see fd_filestat_set_times.
  */
 __wasi_errno_t __wasi_path_filestat_set_times(
     __wasi_fd_t fd,
@@ -2273,14 +2276,24 @@ __wasi_errno_t __wasi_path_filestat_set_times(
     size_t path_len,
 
     /**
-     * The desired values of the data access timestamp.
+     * The desired values of the data access timestamp (seconds).
      */
     __wasi_timestamp_t atim,
 
     /**
-     * The desired values of the data modification timestamp.
+     * desired values of the data access timestamp (nanoseconds).
+     */
+    __wasi_timestamp_t atim_ns,
+
+    /**
+     * The desired values of the data modification timestamp (seconds).
      */
     __wasi_timestamp_t mtim,
+
+    /**
+     * desired values of the data modification timestamp (nanoseconds).
+     */
+    __wasi_timestamp_t mtim_ns,
 
     /**
      * A bitmask indicating which timestamps to adjust.
@@ -2719,95 +2732,7 @@ __wasi_errno_t __wasi_sock_shutdown(
     __warn_unused_result__
 ));
 
-/* a-Shell additions: getenv, putenv, unsetenv, clearenv(?)
-
-/**
- * Read the contents of an environment variable. 
- * Note: This is the basis of getenv()
- */
-__wasi_errno_t __wasi_ashell_getenv(
-    /**
-     * The name of the environment variable 
-     */
-    const char *variable,
-
-    /**
-     * The length of the buffer pointed to by `variable`.
-     */
-    size_t variable_len,
-
-    /**
-     * The buffer to which to write the contents of the environment variable.
-     */
-    uint8_t * buf,
-
-    __wasi_size_t buf_len,
-
-    /**
-     * The number of bytes placed in the buffer.
-     */
-    __wasi_size_t *bufused
-) __attribute__((
-    __import_module__("wasi_snapshot_preview1"),
-    __import_name__("ashell_getenv"),
-    __warn_unused_result__
-));
-
-/**
- * Sets the value of an environment variable. 
- * Note: This is the basis of setenv()
- */
-__wasi_errno_t __wasi_ashell_setenv(
-    /**
-     * The name of the environment variable 
-     */
-    const char *variable,
-
-    /**
-     * The length of the buffer pointed to by `variable`.
-     */
-    size_t variable_len,
-
-    /**
-     * The value of the environment variable 
-     */
-    const char *value,
-
-    /**
-     * The length of the buffer pointed to by `value`.
-     */
-    size_t value_len,
-
-    /**
-     * overwrite ?
-     */
-    int force
-) __attribute__((
-    __import_module__("wasi_snapshot_preview1"),
-    __import_name__("ashell_setenv"),
-    __warn_unused_result__
-));
-
-/**
- * unsets the value of an environment variable
- * Note: This is the basis of unsetenv()
- */
-__wasi_errno_t __wasi_ashell_unsetenv(
-    /**
-     * The name of the environment variable 
-     */
-    const char *variable,
-
-    /**
-     * The length of the buffer pointed to by `variable`.
-     */
-    size_t variable_len
-
-) __attribute__((
-    __import_module__("wasi_snapshot_preview1"),
-    __import_name__("ashell_unsetenv"),
-    __warn_unused_result__
-));
+/* a-Shell additions: getcwd, chdir, fchdir, system.
 
 /**
  * gets the value of the current directory
