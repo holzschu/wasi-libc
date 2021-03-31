@@ -2,7 +2,9 @@
 #define _STDIO_IMPL_H
 
 #include <stdio.h>
+#if defined(__wasilibc_unmodified_upstream)
 #include "syscall.h"
+#endif
 
 #define UNGET 8
 
@@ -81,16 +83,16 @@ hidden size_t __stdout_write(FILE *, const unsigned char *, size_t);
 hidden off_t __stdio_seek(FILE *, off_t, int);
 hidden int __stdio_close(FILE *);
 
-hidden size_t __string_read(FILE *, unsigned char *, size_t);
-
 hidden int __toread(FILE *);
 hidden int __towrite(FILE *);
 
 hidden void __stdio_exit(void);
 hidden void __stdio_exit_needed(void);
 
+#ifdef __wasilibc_unmodified_upstream // wasm has no "protected" visibility
 #if defined(__PIC__) && (100*__GNUC__+__GNUC_MINOR__ >= 303)
 __attribute__((visibility("protected")))
+#endif
 #endif
 int __overflow(FILE *, int), __uflow(FILE *);
 

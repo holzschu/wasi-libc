@@ -246,13 +246,21 @@ hidden int    __rem_pio2(double,double*);
 hidden double __sin(double,double,int);
 hidden double __cos(double,double);
 hidden double __tan(double,double,int);
+#ifdef __wasilibc_unmodified_upstream // Wasm doesn't have alternate rounding modes
+hidden double __expo2(double,double);
+#else
 hidden double __expo2(double);
+#endif
 
 hidden int    __rem_pio2f(float,double*);
 hidden float  __sindf(double);
 hidden float  __cosdf(double);
 hidden float  __tandf(double,int);
+#ifdef __wasilibc_unmodified_upstream // Wasm doesn't have alternate rounding modes
+hidden float  __expo2f(float,float);
+#else
 hidden float  __expo2f(float);
+#endif
 
 hidden int __rem_pio2l(long double, long double *);
 hidden long double __sinl(long double, long double, int);
@@ -277,5 +285,8 @@ hidden double __math_uflow(uint32_t);
 hidden double __math_oflow(uint32_t);
 hidden double __math_divzero(uint32_t);
 hidden double __math_invalid(double);
+#if LDBL_MANT_DIG != DBL_MANT_DIG
+hidden long double __math_invalidl(long double);
+#endif
 
 #endif

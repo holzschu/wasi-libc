@@ -4,6 +4,7 @@
 
 #include <wasi/api.h>
 #include <wasi/libc.h>
+#include <wasi/libc-nocwd.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -17,19 +18,15 @@ static int sel_true(const struct dirent *de) {
   return 1;
 }
 
-int scandirat(int dirfd, const char *dir, struct dirent ***namelist,
-              int (*sel)(const struct dirent *),
-              int (*compar)(const struct dirent **, const struct dirent **)) {
+int __wasilibc_nocwd_scandirat(int dirfd, const char *dir, struct dirent ***namelist,
+                               int (*sel)(const struct dirent *),
+                               int (*compar)(const struct dirent **, const struct dirent **)) {
   // Match all files if no select function is provided.
   if (sel == NULL)
     sel = sel_true;
 
   // Open the directory.
-#ifdef __wasilibc_unmodified_upstream // avoid making a varargs call
-  int fd = openat(dirfd, dir, O_RDONLY | O_NONBLOCK | O_DIRECTORY);
-#else
-  int fd = __wasilibc_openat_nomode(dirfd, dir, O_RDONLY | O_NONBLOCK | O_DIRECTORY);
-#endif
+  int fd = __wasilibc_nocwd_openat_nomode(dirfd, dir, O_RDONLY | O_NONBLOCK | O_DIRECTORY);
   if (fd == -1)
     return -1;
 
@@ -119,12 +116,8 @@ int scandirat(int dirfd, const char *dir, struct dirent ***namelist,
 
   read_entries:;
     // Load more directory entries and continue.
-#ifdef __wasilibc_unmodified_upstream
-    __wasi_errno_t error = __wasi_file_readdir(fd, buffer, buffer_size,
-#else
     // TODO: Remove the cast on `buffer` once the witx is updated with char8 support.
     __wasi_errno_t error = __wasi_fd_readdir(fd, (uint8_t *)buffer, buffer_size,
-#endif
                                                        cookie, &buffer_used);
     if (error != 0) {
       errno = error;

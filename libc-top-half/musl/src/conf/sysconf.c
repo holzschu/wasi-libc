@@ -1,10 +1,16 @@
 #include <unistd.h>
 #include <limits.h>
 #include <errno.h>
+#ifdef __wasilibc_unmodified_upstream // WASI has no process-level accounting
 #include <sys/resource.h>
+#endif
+#ifdef __wasilibc_unmodified_upstream // WASI has no realtime signals
 #include <signal.h>
+#endif
 #include <sys/sysinfo.h>
+#ifdef __wasilibc_unmodified_upstream
 #include "syscall.h"
+#endif
 #include "libc.h"
 
 #define JT(x) (-256|(x))
