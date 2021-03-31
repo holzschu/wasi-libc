@@ -31,16 +31,12 @@ int __wasilibc_nocwd_utimensat(int fd, const char *path, const struct timespec t
 
   // Perform system call.
   __wasi_errno_t error =
-#ifdef __wasilibc_unmodified_upstream // split out __wasi_lookup_t, fstat
-      __wasi_path_filestat_set_times(fd, lookup_flags, path, st_atim, st_mtim, flags);
-#else
       // iOS/a-Shell version: parameters are clamped to 32 bits even though everyone says 64 bits. 
       // So we send seconds and nanoseconds separately.
       // This will still cause a bug in 2038, unless JS+Wasm has moved to 64 bits by then.
-      // __wasi_path_filestat_set_times(fd, lookup_flags, path, strlen(path), st_atim, st_mtim, flags);
+      // __wasi_path_filestat_set_times(fd, lookup_flags, path, st_atim, st_mtim, flags);
       // TODO: check if modifications (above) fix issue
       __wasi_path_filestat_set_times(fd, lookup_flags, path, strlen(path), times[0].tv_sec, times[0].tv_nsec, times[1].tv_sec, times[1].tv_nsec, flags);
-#endif
   if (error != 0) {
     errno = errno_fixup_directory(fd, error);
     return -1;
