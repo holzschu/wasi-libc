@@ -2,7 +2,8 @@
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
-#include "syscall.h"
+// iOS: not needed
+// #include "syscall.h"
 
 char *getcwd(char *buf, size_t size)
 {

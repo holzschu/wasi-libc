@@ -5,6 +5,7 @@
 // #include <sys/wait.h>
 // #include <spawn.h>
 #include <errno.h>
+#include <string.h>
 // #include "pthread_impl.h"
 
 extern char **__environ;

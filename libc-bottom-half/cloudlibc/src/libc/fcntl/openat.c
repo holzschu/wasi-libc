@@ -53,12 +53,15 @@ int __wasilibc_nocwd_openat_nomode(int fd, const char *path, int oflag) {
   }
 
   // Ensure that we can actually obtain the minimal rights needed.
+  // a-Shell: fd is the file descriptor for the current directory, which we do not have.
+  __wasi_errno_t error;
+  /*
   __wasi_fdstat_t fsb_cur;
   __wasi_errno_t error = __wasi_fd_fdstat_get(fd, &fsb_cur);
   if (error != 0) {
     errno = error;
     return -1;
-  }
+  } */
 
   // Path lookup properties.
   __wasi_lookupflags_t lookup_flags = 0;
@@ -67,8 +70,8 @@ int __wasilibc_nocwd_openat_nomode(int fd, const char *path, int oflag) {
 
   // Open file with appropriate rights.
   __wasi_fdflags_t fs_flags = oflag & 0xfff;
-  __wasi_rights_t fs_rights_base = max & fsb_cur.fs_rights_inheriting;
-  __wasi_rights_t fs_rights_inheriting = fsb_cur.fs_rights_inheriting;
+  __wasi_rights_t fs_rights_base = max ; // & fsb_cur.fs_rights_inheriting;
+  __wasi_rights_t fs_rights_inheriting = max; // fsb_cur.fs_rights_inheriting;
   __wasi_fd_t newfd;
   error = __wasi_path_open(fd, lookup_flags, path,
                                  (oflag >> 12) & 0xfff,

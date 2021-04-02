@@ -49,8 +49,11 @@ LIBC_BOTTOM_HALF_ALL_SOURCES = \
 # references to a function defined in `chdir.c` only work if `chdir.c` is at the
 # end of the archive, but once that LLD review lands and propagates into LLVM
 # then we don't have to do this.
+# a-Shell: we don't use chdir.c from bottom half, so keep the filter-out and don't add it back
+# Same with getcwd.c
 LIBC_BOTTOM_HALF_ALL_SOURCES := $(filter-out $(LIBC_BOTTOM_HALF_SOURCES)/chdir.c,$(LIBC_BOTTOM_HALF_ALL_SOURCES))
-LIBC_BOTTOM_HALF_ALL_SOURCES := $(LIBC_BOTTOM_HALF_ALL_SOURCES) $(LIBC_BOTTOM_HALF_SOURCES)/chdir.c
+LIBC_BOTTOM_HALF_ALL_SOURCES := $(filter-out $(LIBC_BOTTOM_HALF_SOURCES)/getcwd.c,$(LIBC_BOTTOM_HALF_ALL_SOURCES))
+# LIBC_BOTTOM_HALF_ALL_SOURCES := $(LIBC_BOTTOM_HALF_ALL_SOURCES) $(LIBC_BOTTOM_HALF_SOURCES)/chdir.c
 
 LIBWASI_EMULATED_MMAN_SOURCES = \
     $(shell find $(LIBC_BOTTOM_HALF_DIR)/mman -name \*.c)

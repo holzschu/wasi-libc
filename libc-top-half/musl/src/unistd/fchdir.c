@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
-#include "syscall.h"
+// #include "syscall.h" // iOS: commented out since it breaks compilation.
 
 int fchdir(int fd)
 {
@@ -12,6 +12,7 @@ int fchdir(int fd)
 		errno = error;
 		return -1;
 	}
+	return 0; 
 	// before iOS: 
 	// int ret = __syscall(SYS_fchdir, fd);
 	// if (ret != -EBADF || __syscall(SYS_fcntl, fd, F_GETFD) < 0)

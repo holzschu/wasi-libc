@@ -2013,6 +2013,7 @@ __wasi_errno_t __wasi_path_filestat_set_times(
      * The path of the file or directory to operate on.
      */
     const char *path,
+
     /**
      * The desired values of the data access timestamp (seconds).
      */
@@ -2311,7 +2312,7 @@ __wasi_errno_t __wasi_ashell_getcwd(
     /**
      * The buffer to which to write the contents of the current directory
      */
-    uint8_t * buf,
+    char * buf,
 
     __wasi_size_t buf_len,
 

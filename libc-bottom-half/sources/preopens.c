@@ -158,6 +158,9 @@ int __wasilibc_find_relpath(const char *path,
 int __wasilibc_find_abspath(const char *path,
                             const char **abs_prefix,
                             const char **relative_path) {
+    // a-Shell version: since we're using iOS file system, relative_path == path
+    *relative_path = path; 
+    return 0;
     // Strip leading `/` characters, the prefixes we're mataching won't have
     // them.
     while (*path == '/')

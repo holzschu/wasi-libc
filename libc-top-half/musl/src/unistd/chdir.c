@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include "syscall.h"
 // iOS: 
+// #include "syscall.h" // commented out, since it fails compiling
 #include <errno.h>
 #include <string.h>
 
