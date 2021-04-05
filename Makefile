@@ -148,6 +148,8 @@ LIBC_TOP_HALF_MUSL_SOURCES = \
         unistd/chdir.c \
         unistd/fchdir.c \
         process/system.c \
+        legacy/futimes.c \
+        legacy/lutimes.c \
     ) \
     $(filter-out %/procfdname.c %/syscall.c %/syscall_ret.c %/vdso.c %/version.c, \
                  $(wildcard $(LIBC_TOP_HALF_MUSL_SRC_DIR)/internal/*.c)) \

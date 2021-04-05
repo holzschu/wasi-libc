@@ -644,6 +644,7 @@ ftello64
 ftime
 ftruncate
 futimens
+futimes
 fwide
 fwprintf
 fwrite
@@ -825,6 +826,7 @@ lroundl
 lsearch
 lseek
 lstat
+lutimes
 malloc
 malloc_usable_size
 mblen
@@ -1127,6 +1129,7 @@ uselocale
 usleep
 utime
 utimensat
+utimes
 vasprintf
 vdprintf
 versionsort

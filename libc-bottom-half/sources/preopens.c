@@ -160,7 +160,7 @@ int __wasilibc_find_abspath(const char *path,
                             const char **relative_path) {
     // a-Shell version: since we're using iOS file system, relative_path == path
     *relative_path = path; 
-    return 0;
+    return AT_FDCWD; // All paths relative to current directory
     // Strip leading `/` characters, the prefixes we're mataching won't have
     // them.
     while (*path == '/')
