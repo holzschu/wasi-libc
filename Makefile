@@ -1,8 +1,8 @@
 # These variables are specifically meant to be overridable via the make
 # command-line.
 WASM_CC ?= clang
-WASM_NM ?= $(patsubst %clang,%llvm-nm,$(WASM_CC))
-WASM_AR ?= $(patsubst %clang,%llvm-ar,$(WASM_CC))
+WASM_NM ?= $(patsubst %clang,%llvm-nm,$(filter-out ccache sccache,$(WASM_CC)))
+WASM_AR ?= $(patsubst %clang,%llvm-ar,$(filter-out ccache sccache,$(WASM_CC)))
 WASM_CFLAGS ?= -O2 -DNDEBUG
 # The directory where we build the sysroot.
 SYSROOT ?= $(CURDIR)/sysroot
@@ -10,16 +10,12 @@ SYSROOT ?= $(CURDIR)/sysroot
 INSTALL_DIR ?= /usr/local
 # single or posix
 THREAD_MODEL ?= single
+# dlmalloc or none
+MALLOC_IMPL ?= dlmalloc
 # yes or no
-BUILD_DLMALLOC ?= yes
 BUILD_LIBC_TOP_HALF ?= yes
 # The directory where we're store intermediate artifacts.
 OBJDIR ?= $(CURDIR)/build
-
-# Check dependencies.
-ifneq ($(BUILD_DLMALLOC),yes)
-$(error build currently depends on BUILD_DLMALLOC=yes)
-endif
 
 # Variables from this point on are not meant to be overridable via the
 # make command-line.
@@ -217,7 +213,9 @@ CFLAGS += -Wall -Wextra -Werror \
   -Wno-unused-function \
   -Wno-ignored-attributes \
   -Wno-missing-braces \
-  -Wno-ignored-pragmas
+  -Wno-ignored-pragmas \
+  -Wno-unused-but-set-variable \
+  -Wno-unknown-warning-option
 
 # Configure support for threads.
 ifeq ($(THREAD_MODEL), single)
@@ -236,8 +234,12 @@ objs = $(patsubst $(CURDIR)/%.c,$(OBJDIR)/%.o,$(1))
 DLMALLOC_OBJS = $(call objs,$(DLMALLOC_SOURCES))
 LIBC_BOTTOM_HALF_ALL_OBJS = $(call objs,$(LIBC_BOTTOM_HALF_ALL_SOURCES))
 LIBC_TOP_HALF_ALL_OBJS = $(call objs,$(LIBC_TOP_HALF_ALL_SOURCES))
-ifeq ($(BUILD_DLMALLOC),yes)
+ifeq ($(MALLOC_IMPL),dlmalloc)
 LIBC_OBJS += $(DLMALLOC_OBJS)
+else ifeq ($(MALLOC_IMPL),none)
+# No object files to add.
+else
+$(error unknown malloc implementation $(MALLOC_IMPL))
 endif
 # Add libc-bottom-half's objects.
 LIBC_OBJS += $(LIBC_BOTTOM_HALF_ALL_OBJS)
@@ -384,15 +386,15 @@ $(LIBWASI_EMULATED_SIGNAL_MUSL_OBJS): CFLAGS += \
 
 $(OBJDIR)/%.long-double.o: $(CURDIR)/%.c include_dirs
 	@mkdir -p "$(@D)"
-	"$(WASM_CC)" $(CFLAGS) -MD -MP -o $@ -c $<
+	$(WASM_CC) $(CFLAGS) -MD -MP -o $@ -c $<
 
 $(OBJDIR)/%.no-floating-point.o: $(CURDIR)/%.c include_dirs
 	@mkdir -p "$(@D)"
-	"$(WASM_CC)" $(CFLAGS) -MD -MP -o $@ -c $<
+	$(WASM_CC) $(CFLAGS) -MD -MP -o $@ -c $<
 
 $(OBJDIR)/%.o: $(CURDIR)/%.c include_dirs
 	@mkdir -p "$(@D)"
-	"$(WASM_CC)" $(CFLAGS) -MD -MP -o $@ -c $<
+	$(WASM_CC) $(CFLAGS) -MD -MP -o $@ -c $<
 
 -include $(shell find $(OBJDIR) -name \*.d)
 
@@ -452,7 +454,7 @@ startup_files: include_dirs
 	#
 	@mkdir -p "$(OBJDIR)"
 	cd "$(OBJDIR)" && \
-	"$(WASM_CC)" $(CFLAGS) -c $(LIBC_BOTTOM_HALF_CRT_SOURCES) -MD -MP && \
+	$(WASM_CC) $(CFLAGS) -c $(LIBC_BOTTOM_HALF_CRT_SOURCES) -MD -MP && \
 	mkdir -p "$(SYSROOT_LIB)" && \
 	mv *.o "$(SYSROOT_LIB)"
 
@@ -473,6 +475,18 @@ finish: startup_files libc
 	    $(WASM_AR) crs "$(SYSROOT_LIB)/lib$${name}.a"; \
 	done
 
+	#
+	# The build succeeded! The generated sysroot is in $(SYSROOT).
+	#
+
+# The check for defined and undefined symbols expects there to be a heap
+# alloctor (providing malloc, calloc, free, etc). Skip this step if the build
+# is done without a malloc implementation.
+ifneq ($(MALLOC_IMPL),none)
+finish: check-symbols
+endif
+
+check-symbols: startup_files libc
 	#
 	# Collect metadata on the sysroot and perform sanity checks.
 	#
@@ -506,7 +520,7 @@ finish: startup_files libc
 	#
 	# Test that it compiles.
 	#
-	"$(WASM_CC)" $(CFLAGS) -fsyntax-only "$(SYSROOT_SHARE)/include-all.c" -Wno-\#warnings
+	$(WASM_CC) $(CFLAGS) -fsyntax-only "$(SYSROOT_SHARE)/include-all.c" -Wno-\#warnings
 
 	#
 	# Collect all the predefined macros, except for compiler version macros
@@ -522,7 +536,7 @@ finish: startup_files libc
 	@#
 	@# TODO: Undefine __FLOAT128__ for now since it's not in clang 8.0.
 	@# TODO: Filter out __FLT16_* for now, as not all versions of clang have these.
-	"$(WASM_CC)" $(CFLAGS) "$(SYSROOT_SHARE)/include-all.c" \
+	$(WASM_CC) $(CFLAGS) "$(SYSROOT_SHARE)/include-all.c" \
 	    -isystem $(SYSROOT_INC) \
 	    -std=gnu17 \
 	    -E -dM -Wno-\#warnings \
@@ -533,6 +547,8 @@ finish: startup_files libc
 	    -U__clang_minor__ \
 	    -U__clang_patchlevel__ \
 	    -U__clang_version__ \
+	    -U__clang_literal_encoding__ \
+	    -U__clang_wide_literal_encoding__ \
 	    -U__GNUC__ \
 	    -U__GNUC_MINOR__ \
 	    -U__GNUC_PATCHLEVEL__ \
@@ -545,10 +561,6 @@ finish: startup_files libc
 	# Check that the computed metadata matches the expected metadata.
 	# This ignores whitespace because on Windows the output has CRLF line endings.
 	diff -wur "$(CURDIR)/expected/$(MULTIARCH_TRIPLE)" "$(SYSROOT_SHARE)"
-
-	#
-	# The build succeeded! The generated sysroot is in $(SYSROOT).
-	#
 
 install: finish
 	mkdir -p "$(INSTALL_DIR)"
