@@ -2839,7 +2839,7 @@ static size_t traverse_and_check(mstate m);
 #define treebin_at(M,i)     (&((M)->treebins[i]))
 
 /* assign tree index for size S to variable I. Use x86 asm if possible  */
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__) || defined(__wasm__))
 #define compute_tree_index(S, I)\
 {\
   unsigned int X = S >> TREEBIN_SHIFT;\
@@ -2942,7 +2942,7 @@ static size_t traverse_and_check(mstate m);
 
 /* index corresponding to given bit. Use x86 asm if possible */
 
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__) || defined(__wasm__))
 #define compute_bit2idx(X, I)\
 {\
   unsigned int J;\
@@ -4593,14 +4593,14 @@ void* dlmalloc(size_t bytes) {
   ensure_initialization(); /* initialize in sys_alloc if not using locks */
 #endif
 
+  if (!PREACTION(gm)) {
 #if __wasilibc_unmodified_upstream // Try to initialize the allocator.
 #else
-  if (!is_initialized(gm)) {
-    try_init_allocator();
-  }
+    if (!is_initialized(gm)) {
+      try_init_allocator();
+    }
 #endif
 
-  if (!PREACTION(gm)) {
     void* mem;
     size_t nb;
     if (bytes <= MAX_SMALL_REQUEST) {
@@ -5214,25 +5214,37 @@ static void internal_inspect_all(mstate m,
 /* ------------------ Exported try_init_allocator -------------------- */
 
 /* Symbol marking the end of data, bss and explicit stack, provided by wasm-ld. */
-extern unsigned char __heap_base;
+extern char __heap_base;
+extern char __heap_end;
 
 /* Initialize the initial state of dlmalloc to be able to use free memory between __heap_base and initial. */
 static void try_init_allocator(void) {
   /* Check that it is a first-time initialization. */
   assert(!is_initialized(gm));
 
-  char *base = (char *)&__heap_base;
-  /* Calls sbrk(0) that returns the initial memory position. */
-  char *init = (char *)CALL_MORECORE(0);
-  int initial_heap_size = init - base;
+  /* Initialize mstate. */
+  ensure_initialization();
+
+  char *base = &__heap_base;
+  // Try to use the linker pseudo-symbol `__heap_end` for the initial size of
+  // the heap.
+  char *end = &__heap_end;
+  if (end < base) {
+    // "end" can be NULL when 1. you are using an old wasm-ld which doesn't
+    // provide `__heap_end` (< 15.0.7) and 2. something (other libraries
+    // or maybe your app?) includes a weak reference to `__heap_end` and
+    // 3. the weak reference is found by the linker before this strong
+    // reference.
+    //
+    // Note: This is a linker bug: https://github.com/llvm/llvm-project/issues/60829
+    __builtin_trap();
+  }
+  size_t initial_heap_size = end - base;
 
   /* Check that initial heap is long enough to serve a minimal allocation request. */
   if (initial_heap_size <= MIN_CHUNK_SIZE + TOP_FOOT_SIZE + MALLOC_ALIGNMENT) {
     return;
   }
-
-  /* Initialize mstate. */
-  ensure_initialization();
 
   /* Initialize the dlmalloc internal state. */
   gm->least_addr = base;

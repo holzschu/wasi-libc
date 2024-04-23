@@ -33,10 +33,10 @@
 #define ADJ_TAI 0x0080
 #define ADJ_TICK 0x4000
 #define ADJ_TIMECONST 0x0020
-#define AF_INET 1
-#define AF_INET6 2
+#define AF_INET PF_INET
+#define AF_INET6 PF_INET6
 #define AF_UNIX 3
-#define AF_UNSPEC 0
+#define AF_UNSPEC PF_UNSPEC
 #define ALT_DIGITS 0x2002F
 #define AM_STR 0x20026
 #define ANYMARK 0x01
@@ -97,9 +97,7 @@
 #define CLNEXT CTRL('v')
 #define CLOCKS_PER_SEC ((clock_t)1000000000)
 #define CLOCK_MONOTONIC (&_CLOCK_MONOTONIC)
-#define CLOCK_PROCESS_CPUTIME_ID (&_CLOCK_PROCESS_CPUTIME_ID)
 #define CLOCK_REALTIME (&_CLOCK_REALTIME)
-#define CLOCK_THREAD_CPUTIME_ID (&_CLOCK_THREAD_CPUTIME_ID)
 #define CMIN 1
 #define CMPLX(x,y) __CMPLX(x, y, double)
 #define CMPLXF(x,y) __CMPLX(x, y, float)
@@ -176,12 +174,14 @@
 #define DO 253
 #define DONT 254
 #define DOUBLEBITS (sizeof(double) * 8)
+#define DTTOIF(x) (__wasilibc_dttoif(x))
 #define DT_BLK __WASI_FILETYPE_BLOCK_DEVICE
 #define DT_CHR __WASI_FILETYPE_CHARACTER_DEVICE
 #define DT_DIR __WASI_FILETYPE_DIRECTORY
 #define DT_FIFO __WASI_FILETYPE_SOCKET_STREAM
 #define DT_LNK __WASI_FILETYPE_SYMBOLIC_LINK
 #define DT_REG __WASI_FILETYPE_REGULAR_FILE
+#define DT_SOCK 20
 #define DT_UNKNOWN __WASI_FILETYPE_UNKNOWN
 #define D_FMT 0x20029
 #define D_T_FMT 0x20028
@@ -547,6 +547,7 @@
 #define ICMP_UNREACH_SRCFAIL 5
 #define ICMP_UNREACH_TOSHOST 12
 #define ICMP_UNREACH_TOSNET 11
+#define IFTODT(x) (__wasilibc_iftodt(x))
 #define IGMP_AWAKENING_MEMBER 5
 #define IGMP_DELAYING_MEMBER 1
 #define IGMP_DVMRP 0x13
@@ -592,6 +593,7 @@
 #define INADDR_ALLSNOOPERS_GROUP ((in_addr_t) 0xe000006a)
 #define INADDR_ANY ((in_addr_t) 0x00000000)
 #define INADDR_BROADCAST ((in_addr_t) 0xffffffff)
+#define INADDR_DUMMY ((in_addr_t) 0xc0000008)
 #define INADDR_LOOPBACK ((in_addr_t) 0x7f000001)
 #define INADDR_MAX_LOCAL_GROUP ((in_addr_t) 0xe00000ff)
 #define INADDR_NONE ((in_addr_t) 0xffffffff)
@@ -1097,7 +1099,7 @@
 #define MSG_BAND 0x04
 #define MSG_HIPRI 0x01
 #define MSG_PEEK __WASI_RIFLAGS_RECV_PEEK
-#define MSG_TRUNC __WASI_RIFLAGS_RECV_DATA_TRUNCATED
+#define MSG_TRUNC __WASI_ROFLAGS_RECV_DATA_TRUNCATED
 #define MSG_WAITALL __WASI_RIFLAGS_RECV_WAITALL
 #define MUXID_ALL (-1)
 #define M_1_PI 0.31830988618379067154
@@ -1118,7 +1120,6 @@
 #define NAN (0.0f/0.0f)
 #define NBBY 8
 #define NCARGS 131072
-#define NDEBUG 1
 #define ND_NA_FLAG_OVERRIDE 0x00000020
 #define ND_NA_FLAG_ROUTER 0x00000080
 #define ND_NA_FLAG_SOLICITED 0x00000040
@@ -1315,6 +1316,9 @@
 #define PAGE_SIZE PAGESIZE
 #define PATH_MAX 4096
 #define PDP_ENDIAN __PDP_ENDIAN
+#define PF_INET 1
+#define PF_INET6 2
+#define PF_UNSPEC 0
 #define PM_STR 0x20027
 #define POLLERR 0x1000
 #define POLLHUP 0x2000
@@ -1464,6 +1468,14 @@
 #define RRFIXEDSZ NS_RRFIXEDSZ
 #define RRQ 01
 #define RS_HIPRI 0x01
+#define RTLD_DEFAULT ((void *)0)
+#define RTLD_GLOBAL 256
+#define RTLD_LAZY 1
+#define RTLD_LOCAL 8
+#define RTLD_NEXT ((void *)-1)
+#define RTLD_NODELETE 4096
+#define RTLD_NOLOAD 4
+#define RTLD_NOW 2
 #define RUSAGE_CHILDREN 2
 #define RUSAGE_SELF 1
 #define R_OK (4)
@@ -1626,6 +1638,18 @@
 #define STRU_F 1
 #define STRU_P 3
 #define STRU_R 2
+#define ST_APPEND 256
+#define ST_IMMUTABLE 512
+#define ST_MANDLOCK 64
+#define ST_NOATIME 1024
+#define ST_NODEV 4
+#define ST_NODIRATIME 2048
+#define ST_NOEXEC 8
+#define ST_NOSUID 2
+#define ST_RDONLY 1
+#define ST_RELATIME 4096
+#define ST_SYNCHRONOUS 16
+#define ST_WRITE 128
 #define SUN_LEN(s) (2+strlen((s)->sun_path))
 #define SUSP 237
 #define SYMLOOP_MAX 40
@@ -1733,6 +1757,7 @@
 #define TCP_NOTSENT_LOWAT 25
 #define TCP_QUEUE_SEQ 21
 #define TCP_QUICKACK 12
+#define TCP_RECEIVE_ZEROCOPY_FLAG_TLB_CLEAN_HINT 0x1
 #define TCP_REPAIR 19
 #define TCP_REPAIR_OFF 0
 #define TCP_REPAIR_OFF_NO_WP -1
@@ -2006,6 +2031,7 @@
 #define _Complex_I (0.0f+1.0fi)
 #define _DIRENT_H 
 #define _DIRENT_HAVE_D_TYPE 
+#define _DLFCN_H 
 #define _ENDIAN_H 
 #define _ERRNO_H 
 #define _ERR_H 
@@ -2121,7 +2147,6 @@
 #define _POSIX_STREAM_MAX 8
 #define _POSIX_SYMLINK_MAX 255
 #define _POSIX_SYMLOOP_MAX 8
-#define _POSIX_THREADS _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKADDR _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKSIZE _POSIX_VERSION
 #define _POSIX_THREAD_CPUTIME _POSIX_VERSION
@@ -2311,6 +2336,7 @@
 #define _SYS_REG_H 
 #define _SYS_SELECT_H 
 #define _SYS_SOCKET_H 
+#define _SYS_STATVFS_H 
 #define _SYS_STAT_H 
 #define _SYS_SYSCALL_H 
 #define _SYS_SYSINFO_H 
@@ -2451,13 +2477,13 @@
 #define __DEFINED_wctype_t 
 #define __DEFINED_wint_t 
 #define __FINITE_MATH_ONLY__ 0
+#define __FLOAT128__ 1
 #define __FLT(x) (__IS_REAL(x) && sizeof(x) == sizeof(float))
 #define __FLTCX(x) (__IS_CX(x) && sizeof(x) == sizeof(float complex))
 #define __FLT_DECIMAL_DIG__ 9
 #define __FLT_DENORM_MIN__ 1.40129846e-45F
 #define __FLT_DIG__ 6
 #define __FLT_EPSILON__ 1.19209290e-7F
-#define __FLT_EVAL_METHOD__ 0
 #define __FLT_HAS_DENORM__ 1
 #define __FLT_HAS_INFINITY__ 1
 #define __FLT_HAS_QUIET_NAN__ 1
@@ -2647,7 +2673,6 @@
 #define __OPENCL_MEMORY_SCOPE_SUB_GROUP 4
 #define __OPENCL_MEMORY_SCOPE_WORK_GROUP 1
 #define __OPENCL_MEMORY_SCOPE_WORK_ITEM 0
-#define __OPTIMIZE__ 1
 #define __ORDER_BIG_ENDIAN__ 4321
 #define __ORDER_LITTLE_ENDIAN__ 1234
 #define __ORDER_PDP_ENDIAN__ 3412
@@ -2952,41 +2977,11 @@
 #define __WASI_RIGHTS_PATH_SYMLINK ((__wasi_rights_t)(1 << 24))
 #define __WASI_RIGHTS_PATH_UNLINK_FILE ((__wasi_rights_t)(1 << 26))
 #define __WASI_RIGHTS_POLL_FD_READWRITE ((__wasi_rights_t)(1 << 27))
+#define __WASI_RIGHTS_SOCK_ACCEPT ((__wasi_rights_t)(1 << 29))
 #define __WASI_RIGHTS_SOCK_SHUTDOWN ((__wasi_rights_t)(1 << 28))
 #define __WASI_ROFLAGS_RECV_DATA_TRUNCATED ((__wasi_roflags_t)(1 << 0))
 #define __WASI_SDFLAGS_RD ((__wasi_sdflags_t)(1 << 0))
 #define __WASI_SDFLAGS_WR ((__wasi_sdflags_t)(1 << 1))
-#define __WASI_SIGNAL_ABRT (UINT8_C(6))
-#define __WASI_SIGNAL_ALRM (UINT8_C(14))
-#define __WASI_SIGNAL_BUS (UINT8_C(7))
-#define __WASI_SIGNAL_CHLD (UINT8_C(16))
-#define __WASI_SIGNAL_CONT (UINT8_C(17))
-#define __WASI_SIGNAL_FPE (UINT8_C(8))
-#define __WASI_SIGNAL_HUP (UINT8_C(1))
-#define __WASI_SIGNAL_ILL (UINT8_C(4))
-#define __WASI_SIGNAL_INT (UINT8_C(2))
-#define __WASI_SIGNAL_KILL (UINT8_C(9))
-#define __WASI_SIGNAL_NONE (UINT8_C(0))
-#define __WASI_SIGNAL_PIPE (UINT8_C(13))
-#define __WASI_SIGNAL_POLL (UINT8_C(28))
-#define __WASI_SIGNAL_PROF (UINT8_C(26))
-#define __WASI_SIGNAL_PWR (UINT8_C(29))
-#define __WASI_SIGNAL_QUIT (UINT8_C(3))
-#define __WASI_SIGNAL_SEGV (UINT8_C(11))
-#define __WASI_SIGNAL_STOP (UINT8_C(18))
-#define __WASI_SIGNAL_SYS (UINT8_C(30))
-#define __WASI_SIGNAL_TERM (UINT8_C(15))
-#define __WASI_SIGNAL_TRAP (UINT8_C(5))
-#define __WASI_SIGNAL_TSTP (UINT8_C(19))
-#define __WASI_SIGNAL_TTIN (UINT8_C(20))
-#define __WASI_SIGNAL_TTOU (UINT8_C(21))
-#define __WASI_SIGNAL_URG (UINT8_C(22))
-#define __WASI_SIGNAL_USR1 (UINT8_C(10))
-#define __WASI_SIGNAL_USR2 (UINT8_C(12))
-#define __WASI_SIGNAL_VTALRM (UINT8_C(25))
-#define __WASI_SIGNAL_WINCH (UINT8_C(27))
-#define __WASI_SIGNAL_XCPU (UINT8_C(23))
-#define __WASI_SIGNAL_XFSZ (UINT8_C(24))
 #define __WASI_SUBCLOCKFLAGS_SUBSCRIPTION_CLOCK_ABSTIME ((__wasi_subclockflags_t)(1 << 0))
 #define __WASI_WHENCE_CUR (UINT8_C(1))
 #define __WASI_WHENCE_END (UINT8_C(2))
@@ -3102,7 +3097,6 @@
 #define and_eq &=
 #define asin(x) __tg_real_complex(asin, (x))
 #define asinh(x) __tg_real_complex(asinh, (x))
-#define assert(x) (void)0
 #define atan(x) __tg_real_complex(atan, (x))
 #define atan2(x,y) __tg_real_2(atan2, (x), (y))
 #define atanh(x) __tg_real_complex(atanh, (x))
@@ -3166,6 +3160,7 @@
 #define fsfilcnt64_t fsfilcnt_t
 #define fstat64 fstat
 #define fstatat64 fstatat
+#define fstatvfs64 fstatvfs
 #define ftello64 ftello
 #define ftruncate64 ftruncate
 #define getdents64 getdents
@@ -3349,6 +3344,7 @@
 #define st_mtime st_mtim.tv_sec
 #define stat64 stat
 #define static_assert _Static_assert
+#define statvfs64 statvfs
 #define stderr (stderr)
 #define stdin (stdin)
 #define stdout (stdout)

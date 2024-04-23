@@ -60,6 +60,7 @@
 #include <__typedef_suseconds_t.h>
 #include <__typedef_time_t.h>
 #include <__typedef_uid_t.h>
+#include <__wasi_snapshot.h>
 #include <alloca.h>
 #include <ar.h>
 #include <arpa/ftp.h>
@@ -75,6 +76,7 @@
 #include <crypt.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <dlfcn.h>
 #include <endian.h>
 #include <err.h>
 #include <errno.h>
@@ -112,6 +114,7 @@
 #include <netpacket/packet.h>
 #include <nl_types.h>
 #include <poll.h>
+#include <pthread.h>
 #include <regex.h>
 #include <sched.h>
 #include <search.h>
@@ -140,6 +143,7 @@
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/stropts.h>
 #include <sys/syscall.h>
 #include <sys/sysinfo.h>

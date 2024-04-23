@@ -581,18 +581,6 @@ _Noreturn void __wasi_proc_exit(
     __imported_wasi_snapshot_preview1_proc_exit((int32_t) rval);
 }
 
-int32_t __imported_wasi_snapshot_preview1_proc_raise(int32_t arg0) __attribute__((
-    __import_module__("wasi_snapshot_preview1"),
-    __import_name__("proc_raise")
-));
-
-__wasi_errno_t __wasi_proc_raise(
-    __wasi_signal_t sig
-){
-    int32_t ret = __imported_wasi_snapshot_preview1_proc_raise((int32_t) sig);
-    return (uint16_t) ret;
-}
-
 int32_t __imported_wasi_snapshot_preview1_sched_yield() __attribute__((
     __import_module__("wasi_snapshot_preview1"),
     __import_name__("sched_yield")
@@ -615,6 +603,20 @@ __wasi_errno_t __wasi_random_get(
     __wasi_size_t buf_len
 ){
     int32_t ret = __imported_wasi_snapshot_preview1_random_get((int32_t) buf, (int32_t) buf_len);
+    return (uint16_t) ret;
+}
+
+int32_t __imported_wasi_snapshot_preview1_sock_accept(int32_t arg0, int32_t arg1, int32_t arg2) __attribute__((
+    __import_module__("wasi_snapshot_preview1"),
+    __import_name__("sock_accept")
+));
+
+__wasi_errno_t __wasi_sock_accept(
+    __wasi_fd_t fd,
+    __wasi_fdflags_t flags,
+    __wasi_fd_t *retptr0
+){
+    int32_t ret = __imported_wasi_snapshot_preview1_sock_accept((int32_t) fd, flags, (int32_t) retptr0);
     return (uint16_t) ret;
 }
 
@@ -664,3 +666,13 @@ __wasi_errno_t __wasi_sock_shutdown(
     return (uint16_t) ret;
 }
 
+#ifdef _REENTRANT
+int32_t __imported_wasi_thread_spawn(int32_t arg0) __attribute__((
+    __import_module__("wasi"),
+    __import_name__("thread-spawn")
+));
+
+int32_t __wasi_thread_spawn(void* start_arg) {
+    return __imported_wasi_thread_spawn((int32_t) start_arg);
+}
+#endif

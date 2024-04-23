@@ -15,12 +15,16 @@ extern "C" {
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
+#define SEEK_DATA 3
+#define SEEK_HOLE 4
 #else
 #include <__header_unistd.h>
 #endif
 
 #ifdef __wasilibc_unmodified_upstream /* Use the compiler's definition of NULL */
-#ifdef __cplusplus
+#if __cplusplus >= 201103L
+#define NULL nullptr
+#elif defined(__cplusplus)
 #define NULL 0L
 #else
 #define NULL ((void*)0)
@@ -241,7 +245,9 @@ void *sbrk(intptr_t);
 pid_t vfork(void);
 int vhangup(void);
 int chroot(const char *);
+#endif
 int getpagesize(void);
+#ifdef __wasilibc_unmodified_upstream /* WASI has no processes */
 int getdtablesize(void);
 int sethostname(const char *, size_t);
 int getdomainname(char *, size_t);
@@ -331,7 +337,9 @@ pid_t gettid(void);
 #endif
 #define _POSIX_VDISABLE         0
 
+#if defined(__wasilibc_unmodified_upstream) || defined(_REENTRANT)
 #define _POSIX_THREADS          _POSIX_VERSION
+#endif
 #define _POSIX_THREAD_PROCESS_SHARED _POSIX_VERSION
 #define _POSIX_THREAD_SAFE_FUNCTIONS _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKADDR _POSIX_VERSION

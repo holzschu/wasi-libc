@@ -1,5 +1,8 @@
 #ifndef	_SYS_SOCKET_H
 #define	_SYS_SOCKET_H
+
+#include <__wasi_snapshot.h>
+
 #ifdef __wasilibc_unmodified_upstream /* Use alternate WASI libc headers */
 #else
 #include <__header_sys_socket.h>
@@ -298,6 +301,8 @@ struct linger {
 #define SCM_TXTIME              SO_TXTIME
 #define SO_BINDTOIFINDEX        62
 #define SO_DETACH_REUSEPORT_BPF 68
+#define SO_PREFER_BUSY_POLL     69
+#define SO_BUSY_POLL_BUDGET     70
 
 #ifndef SOL_SOCKET
 #define SOL_SOCKET      1
@@ -393,29 +398,33 @@ struct sockaddr_storage {
 #include <__struct_sockaddr_storage.h>
 #endif
 
-#ifdef __wasilibc_unmodified_upstream /* WASI has no socket/socketpair */
+#if (defined __wasilibc_unmodified_upstream) || (defined __wasilibc_use_wasip2)
 int socket (int, int, int);
+#endif
+
+#ifdef __wasilibc_unmodified_upstream /* WASI has no socketpair */
 int socketpair (int, int, int, int [2]);
 #endif
 
 int shutdown (int, int);
 
-#ifdef __wasilibc_unmodified_upstream /* WASI has no bind/connect/listen/accept */
-int bind (int, const struct sockaddr *, socklen_t);
+#if (defined __wasilibc_unmodified_upstream) || (defined __wasilibc_use_wasip2)
 int connect (int, const struct sockaddr *, socklen_t);
+int bind (int, const struct sockaddr *, socklen_t);
 int listen (int, int);
-int accept (int, struct sockaddr *__restrict, socklen_t *__restrict);
-int accept4(int, struct sockaddr *__restrict, socklen_t *__restrict, int);
 #endif
 
-#ifdef __wasilibc_unmodified_upstream /* WASI has no getsockname/getpeername */
+int accept (int, struct sockaddr *__restrict, socklen_t *__restrict);
+int accept4(int, struct sockaddr *__restrict, socklen_t *__restrict, int);
+
+#if (defined __wasilibc_unmodified_upstream) || (defined __wasilibc_use_wasip2)
 int getsockname (int, struct sockaddr *__restrict, socklen_t *__restrict);
 int getpeername (int, struct sockaddr *__restrict, socklen_t *__restrict);
 #endif
 
 ssize_t send (int, const void *, size_t, int);
 ssize_t recv (int, void *, size_t, int);
-#ifdef __wasilibc_unmodified_upstream /* WASI has no sendto/recvfrom */
+#if (defined __wasilibc_unmodified_upstream) || (defined __wasilibc_use_wasip2)
 ssize_t sendto (int, const void *, size_t, int, const struct sockaddr *, socklen_t);
 ssize_t recvfrom (int, void *__restrict, size_t, int, struct sockaddr *__restrict, socklen_t *__restrict);
 #endif
@@ -425,7 +434,7 @@ ssize_t recvmsg (int, struct msghdr *, int);
 #endif
 
 int getsockopt (int, int, int, void *__restrict, socklen_t *__restrict);
-#ifdef __wasilibc_unmodified_upstream /* WASI has no setsockopt */
+#if (defined __wasilibc_unmodified_upstream) || (defined __wasilibc_use_wasip2)
 int setsockopt (int, int, int, const void *, socklen_t);
 #endif
 

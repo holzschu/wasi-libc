@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <common/errno.h>
-
 #include <sys/stat.h>
 
 #include <wasi/api.h>
@@ -45,7 +43,7 @@ int __wasilibc_nocwd_utimensat(int fd, const char *path, const struct timespec t
       // TODO: check if modifications (above) fix issue
       __wasi_path_filestat_set_times(fd, flag, path, st_atim_s, st_atim_ns, st_mtim_s, st_mtim_ns, flags);
   if (error != 0) {
-    errno = errno_fixup_directory(fd, error);
+    errno = error;
     return -1;
   }
   return 0;
