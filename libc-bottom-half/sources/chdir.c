@@ -137,6 +137,12 @@ int __wasilibc_find_relpath_alloc(
     size_t *relative_buf_len,
     int can_realloc
 ) {
+    // a-Shell version: since we're using iOS file system, relative_path == path
+    *relative_buf = strdup(path);
+    *relative_buf_len = strlen(path) + 1;
+    return AT_FDCWD; // All paths relative to current directory
+    // end a-Shell version
+    //
     // First, make our path absolute taking the cwd into account.
     const char *abspath = make_absolute(path);
     if (abspath == NULL) {

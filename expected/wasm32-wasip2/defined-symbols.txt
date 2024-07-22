@@ -157,6 +157,7 @@ __math_uflowf
 __math_xflow
 __math_xflowf
 __memrchr
+__mkostemps
 __mo_lookup
 __month_to_secs
 __newlocale
@@ -181,6 +182,7 @@ __progname_full
 __putenv
 __qsort_r
 __rand48_step
+__randname
 __reallocarray
 __rem_pio2
 __rem_pio2_large
@@ -314,7 +316,6 @@ __wasi_sockets_utils__stream
 __wasi_sockets_utils__tcp_bind
 __wasi_sockets_utils__udp_bind
 __wasilibc_access
-__wasilibc_cwd
 __wasilibc_deinitialize_environ
 __wasilibc_dttoif
 __wasilibc_ensure_environ
@@ -322,7 +323,6 @@ __wasilibc_environ
 __wasilibc_fd_renumber
 __wasilibc_find_abspath
 __wasilibc_find_relpath
-__wasilibc_find_relpath_alloc
 __wasilibc_get_environ
 __wasilibc_iftodt
 __wasilibc_initialize_environ
@@ -574,6 +574,7 @@ fabs
 fabsf
 fabsl
 faccessat
+fchdir
 fchmod
 fchmodat
 fclose
@@ -736,6 +737,7 @@ ftello64
 ftime
 ftruncate
 futimens
+futimes
 futimesat
 fwide
 fwprintf
@@ -948,6 +950,7 @@ lroundl
 lsearch
 lseek
 lstat
+lutimes
 malloc
 malloc_usable_size
 mblen
@@ -971,6 +974,16 @@ memrchr
 memset
 mkdir
 mkdirat
+mkdtemp
+mkostemp
+mkostemp64
+mkostemps
+mkostemps64
+mkstemp
+mkstemp64
+mkstemps
+mkstemps64
+mktemp
 mktime
 mmap
 modf
@@ -1252,6 +1265,7 @@ swscanf
 symlink
 symlinkat
 sysconf
+system
 tan
 tanf
 tanh

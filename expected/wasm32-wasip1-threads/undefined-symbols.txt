@@ -71,5 +71,9 @@ __tls_size
 __trunctfdf2
 __trunctfsf2
 __unordtf2
+__wasi_ashell_chdir
+__wasi_ashell_fchdir
+__wasi_ashell_getcwd
+__wasi_ashell_system
 __wasm_call_ctors
 __wasm_init_tls

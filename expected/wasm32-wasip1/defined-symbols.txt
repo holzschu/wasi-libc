@@ -650,11 +650,8 @@ ftello64
 ftime
 ftruncate
 futimens
-<<<<<<< HEAD:expected/wasm32-wasi/defined-symbols.txt
 futimes
-=======
 futimesat
->>>>>>> 9e8c542319242a5e536e14e6046de5968d298038:expected/wasm32-wasip1/defined-symbols.txt
 fwide
 fwprintf
 fwrite

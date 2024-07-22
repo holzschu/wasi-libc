@@ -30,12 +30,12 @@ struct timezone {
 	int tz_minuteswest;
 	int tz_dsttime;
 };
-// utimes is defined in a-Shell wasi-libc
+// futimes, lutimes are defined in a-Shell wasi-libc
 // #ifdef __wasilibc_unmodified_upstream /* WASI libc doesn't build the legacy functions */
 int futimes(int, const struct timeval [2]);
-#endif
+// #endif
 int futimesat(int, const char *, const struct timeval [2]);
-#ifdef __wasilibc_unmodified_upstream /* WASI libc doesn't build the legacy functions */
+// #ifdef __wasilibc_unmodified_upstream /* WASI libc doesn't build the legacy functions */
 int lutimes(const char *, const struct timeval [2]);
 // #endif
 #ifdef __wasilibc_unmodified_upstream /* WASI has no way to set the time */

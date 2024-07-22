@@ -65,6 +65,10 @@ __subtf3
 __trunctfdf2
 __trunctfsf2
 __unordtf2
+__wasi_ashell_chdir
+__wasi_ashell_fchdir
+__wasi_ashell_getcwd
+__wasi_ashell_system
 __wasi_preview1_adapter_close_badfd
 __wasi_preview1_adapter_open_badfd
 __wasm_call_ctors

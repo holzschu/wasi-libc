@@ -49,21 +49,21 @@ int __wasilibc_nocwd_utimensat(int fd, const char *path, const struct timespec t
   return 0;
 }
 
-// a-Shell: let's also have utimes:
-int utimes(const char *pathname, const struct timeval times[2])
-{
-	struct timespec ts[2];
-	if (times) {
-		int i;
-		for (i=0; i<2; i++) {
-			if (times[i].tv_usec >= 1000000ULL) {
-				errno = EINVAL; 
-				return -1; 
-			}
-			ts[i].tv_sec = times[i].tv_sec;
-			ts[i].tv_nsec = times[i].tv_usec * 1000;
-		}
-	}
-	return __wasilibc_nocwd_utimensat(AT_FDCWD, pathname, times ? ts : 0, 0);
-}
+// a-Shell: utimes has been moved to posix.c:
+// int utimes(const char *pathname, const struct timeval times[2])
+// {
+// 	struct timespec ts[2];
+// 	if (times) {
+// 		int i;
+// 		for (i=0; i<2; i++) {
+// 			if (times[i].tv_usec >= 1000000ULL) {
+// 				errno = EINVAL; 
+// 				return -1; 
+// 			}
+// 			ts[i].tv_sec = times[i].tv_sec;
+// 			ts[i].tv_nsec = times[i].tv_usec * 1000;
+// 		}
+// 	}
+// 	return __wasilibc_nocwd_utimensat(AT_FDCWD, pathname, times ? ts : 0, 0);
+// }
 

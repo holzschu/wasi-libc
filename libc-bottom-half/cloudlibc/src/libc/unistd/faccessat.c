@@ -26,6 +26,8 @@ int __wasilibc_nocwd_faccessat(int fd, const char *path, int amode, int flag) {
     return -1;
   }
 
+  // a-Shell: disable this part, as directories don't have file descriptors.
+  /*
   // Test whether the requested access rights are present on the
   // directory file descriptor.
   if (amode != 0) {
@@ -48,6 +50,6 @@ int __wasilibc_nocwd_faccessat(int fd, const char *path, int amode, int flag) {
       errno = EACCES;
       return -1;
     }
-  }
+  } */
   return 0;
 }

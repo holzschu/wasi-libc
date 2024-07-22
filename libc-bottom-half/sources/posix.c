@@ -125,17 +125,21 @@ int lstat(const char *restrict path, struct stat *restrict buf) {
 }
 
 int utime(const char *path, const struct utimbuf *times) {
-    char *relative_path;
-    int dirfd = find_relpath(path, &relative_path);
+    // char *relative_path;
+    // int dirfd = find_relpath(path, &relative_path);
 
-    // If we can't find a preopen for it, fail as if we can't find the path.
-    if (dirfd == -1) {
-        errno = ENOENT;
-        return -1;
-    }
+    // // If we can't find a preopen for it, fail as if we can't find the path.
+    // if (dirfd == -1) {
+    //     errno = ENOENT;
+    //     return -1;
+    // }
 
+    // return __wasilibc_nocwd_utimensat(
+    //          dirfd, relative_path,
+    //  TODO: check whether that works without the comments (find_relpath has been hacked for that)
+    //  a-Shell version:
     return __wasilibc_nocwd_utimensat(
-             dirfd, relative_path,
+			AT_FDCWD, path,
                      times ? ((struct timespec [2]) {
                                  { .tv_sec = times->actime },
                                  { .tv_sec = times->modtime }
@@ -145,17 +149,20 @@ int utime(const char *path, const struct utimbuf *times) {
 }
 
 int utimes(const char *path, const struct timeval times[2]) {
-    char *relative_path;
-    int dirfd = find_relpath(path, &relative_path);
+    // char *relative_path;
+    // int dirfd = find_relpath(path, &relative_path);
 
-    // If we can't find a preopen for it, fail as if we can't find the path.
-    if (dirfd == -1) {
-        errno = ENOENT;
-        return -1;
-    }
+    // // If we can't find a preopen for it, fail as if we can't find the path.
+    // if (dirfd == -1) {
+    //     errno = ENOENT;
+    //     return -1;
+    // }
 
+    // return __wasilibc_nocwd_utimensat(
+    //          dirfd, relative_path,
+    //  a-Shell version:
     return __wasilibc_nocwd_utimensat(
-             dirfd, relative_path,
+			AT_FDCWD, path,
                      times ? ((struct timespec [2]) {
                                  { .tv_sec = times[0].tv_sec,
 				   .tv_nsec = times[0].tv_usec * 1000 },
@@ -372,16 +379,19 @@ __wasilibc_access(const char *path, int mode, int flags)
 int
 __wasilibc_utimens(const char *path, const struct timespec times[2], int flags)
 {
-    char *relative_path;
-    int dirfd = find_relpath(path, &relative_path);
+    // char *relative_path;
+    // int dirfd = find_relpath(path, &relative_path);
 
-    // If we can't find a preopen for it, fail as if we can't find the path.
-    if (dirfd == -1) {
-        errno = ENOENT;
-        return -1;
-    }
+    // // If we can't find a preopen for it, fail as if we can't find the path.
+    // if (dirfd == -1) {
+    //     errno = ENOENT;
+    //     return -1;
+    // }
 
-    return __wasilibc_nocwd_utimensat(dirfd, relative_path,
+    // return __wasilibc_nocwd_utimensat(dirfd, relative_path,
+    //  a-Shell version:
+    return __wasilibc_nocwd_utimensat(
+			AT_FDCWD, path,
                                       times, flags);
 }
 

@@ -170,6 +170,7 @@ __math_uflowf
 __math_xflow
 __math_xflowf
 __memrchr
+__mkostemps
 __mo_lookup
 __month_to_secs
 __newlocale
@@ -219,6 +220,7 @@ __pthread_tsd_size
 __putenv
 __qsort_r
 __rand48_step
+__randname
 __random_lockptr
 __reallocarray
 __register_locked_file
@@ -357,9 +359,6 @@ __wasi_sock_shutdown
 __wasi_thread_spawn
 __wasi_thread_start_C
 __wasilibc_access
-__wasilibc_cwd
-__wasilibc_cwd_lock
-__wasilibc_cwd_unlock
 __wasilibc_deinitialize_environ
 __wasilibc_dttoif
 __wasilibc_ensure_environ
@@ -367,7 +366,6 @@ __wasilibc_environ
 __wasilibc_fd_renumber
 __wasilibc_find_abspath
 __wasilibc_find_relpath
-__wasilibc_find_relpath_alloc
 __wasilibc_futex_wait
 __wasilibc_get_environ
 __wasilibc_iftodt
@@ -609,6 +607,7 @@ fabs
 fabsf
 fabsl
 faccessat
+fchdir
 fchmod
 fchmodat
 fclose
@@ -716,6 +715,7 @@ ftruncate
 ftrylockfile
 funlockfile
 futimens
+futimes
 futimesat
 fwide
 fwprintf
@@ -900,6 +900,7 @@ lroundl
 lsearch
 lseek
 lstat
+lutimes
 malloc
 malloc_usable_size
 mblen
@@ -923,6 +924,16 @@ memrchr
 memset
 mkdir
 mkdirat
+mkdtemp
+mkostemp
+mkostemp64
+mkostemps
+mkostemps64
+mkstemp
+mkstemp64
+mkstemps
+mkstemps64
+mktemp
 mktime
 mmap
 modf
@@ -1234,6 +1245,7 @@ swscanf
 symlink
 symlinkat
 sysconf
+system
 tan
 tanf
 tanh
