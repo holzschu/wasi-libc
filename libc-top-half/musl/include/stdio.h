@@ -145,13 +145,14 @@ void perror(const char *);
 int setvbuf(FILE *__restrict, char *__restrict, int, size_t);
 void setbuf(FILE *__restrict, char *__restrict);
 
-#ifdef __wasilibc_unmodified_upstream /* WASI has no temp directories */
+// #ifdef __wasilibc_unmodified_upstream /* WASI has no temp directories */
+// a-Shell change: we need tmpnam and tmpfile for many packages
 char *tmpnam(char *);
 FILE *tmpfile(void);
-#else
-char *tmpnam(char *) __attribute__((__deprecated__("tmpnam is not defined on WASI")));
-FILE *tmpfile(void) __attribute__((__deprecated__("tmpfile is not defined on WASI")));
-#endif
+// #else
+// char *tmpnam(char *) __attribute__((__deprecated__("tmpnam is not defined on WASI")));
+// FILE *tmpfile(void) __attribute__((__deprecated__("tmpfile is not defined on WASI")));
+// #endif
 
 #if defined(_POSIX_SOURCE) || defined(_POSIX_C_SOURCE) \
  || defined(_XOPEN_SOURCE) || defined(_GNU_SOURCE) \

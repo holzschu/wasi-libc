@@ -83,40 +83,42 @@ struct dirent *readdir(DIR *dirp) {
     dirent->d_type = entry.d_type;
     memcpy(dirent->d_name, name, entry.d_namlen);
     dirent->d_name[entry.d_namlen] = '\0';
-
+    
     // `fd_readdir` implementations may set the inode field to zero if the
     // the inode number is unknown. In that case, do an `fstatat` to get the
     // inode number.
     off_t d_ino = entry.d_ino;
     unsigned char d_type = entry.d_type;
-    if (d_ino == 0 && strcmp(dirent->d_name, "..") != 0) {
-      struct stat statbuf;
-      if (fstatat(dirp->fd, dirent->d_name, &statbuf, AT_SYMLINK_NOFOLLOW) != 0) {
-	if (errno == ENOENT) {
-	  // The file disappeared before we could read it, so skip it.
-	  dirp->buffer_processed += entry_size;
-	  continue;
+	if (d_ino == 0 && strcmp(dirent->d_name, "..") != 0) {
+		struct stat statbuf;
+		if (fstatat(dirp->fd, dirent->d_name, &statbuf, AT_SYMLINK_NOFOLLOW) != 0) {
+			if (errno == ENOENT) {
+				// The file disappeared before we could read it, so skip it.
+				dirp->buffer_processed += entry_size;
+				continue;
+			}
+			return NULL;
+		}
+
+		// Fill in the inode.
+		d_ino = statbuf.st_ino;
+
+		// In case someone raced with us and replaced the object with this name
+		// with another of a different type, update the type too.
+		d_type = __wasilibc_iftodt(statbuf.st_mode & S_IFMT);
 	}
-        return NULL;
-      }
-
-      // Fill in the inode.
-      d_ino = statbuf.st_ino;
-
-      // In case someone raced with us and replaced the object with this name
-      // with another of a different type, update the type too.
-      d_type = __wasilibc_iftodt(statbuf.st_mode & S_IFMT);
-    }
     dirent->d_ino = d_ino;
     dirent->d_type = d_type;
 
     dirp->cookie = entry.d_next;
     dirp->buffer_processed += entry_size;
+    
     return dirent;
 
   read_entries:
     // Discard data currently stored in the input buffer.
     dirp->buffer_used = dirp->buffer_processed = dirp->buffer_size;
+    struct dirent * old_dirent = dirp->dirent;
 
     // Load more directory entries and continue.
     __wasi_errno_t error =
@@ -127,6 +129,9 @@ struct dirent *readdir(DIR *dirp) {
       errno = error;
       return NULL;
     }
+    // iOS: Fixing a weird bug where the 2nd call to __wasi_fd_readdir erases dirp->dirent:
+    if (dirp->dirent == NULL) 
+    	dirp->dirent = old_dirent;
     dirp->buffer_processed = 0;
   }
 }

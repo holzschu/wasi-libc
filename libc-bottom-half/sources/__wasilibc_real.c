@@ -214,7 +214,7 @@ __wasi_errno_t __wasi_fd_filestat_set_size(
     return (uint16_t) ret;
 }
 
-int32_t __imported_wasi_snapshot_preview1_fd_filestat_set_times(int32_t arg0, int64_t arg1, int64_t arg1b, int64_t arg2,int64_t arg2b, int32_t arg3) __attribute__((
+int32_t __imported_wasi_snapshot_preview1_fd_filestat_set_times(int32_t arg0, int64_t arg1, int64_t arg2, int32_t arg3) __attribute__((
     __import_module__("wasi_snapshot_preview1"),
     __import_name__("fd_filestat_set_times")
 ));
@@ -222,12 +222,10 @@ int32_t __imported_wasi_snapshot_preview1_fd_filestat_set_times(int32_t arg0, in
 __wasi_errno_t __wasi_fd_filestat_set_times(
     __wasi_fd_t fd,
     __wasi_timestamp_t atim,
-    __wasi_timestamp_t atim_ns,
     __wasi_timestamp_t mtim,
-    __wasi_timestamp_t mtim_ns,
     __wasi_fstflags_t fst_flags
 ){
-    int32_t ret = __imported_wasi_snapshot_preview1_fd_filestat_set_times((int32_t) fd, (int64_t) atim, (int64_t) atim_ns, (int64_t) mtim, (int64_t) mtim_ns, fst_flags);
+    int32_t ret = __imported_wasi_snapshot_preview1_fd_filestat_set_times((int32_t) fd, (int64_t) atim, (int64_t) mtim, fst_flags);
     return (uint16_t) ret;
 }
 
@@ -419,7 +417,7 @@ __wasi_errno_t __wasi_path_filestat_get(
     return (uint16_t) ret;
 }
 
-int32_t __imported_wasi_snapshot_preview1_path_filestat_set_times(int32_t arg0, int32_t arg1, int32_t arg2, int32_t arg3, int64_t arg4, int64_t arg4b, int64_t arg5,  int64_t arg5b, int32_t arg6) __attribute__((
+int32_t __imported_wasi_snapshot_preview1_path_filestat_set_times(int32_t arg0, int32_t arg1, int32_t arg2, int32_t arg3, int64_t arg4, int64_t arg5,  int32_t arg6) __attribute__((
     __import_module__("wasi_snapshot_preview1"),
     __import_name__("path_filestat_set_times")
 ));
@@ -429,13 +427,11 @@ __wasi_errno_t __wasi_path_filestat_set_times(
     __wasi_lookupflags_t flags,
     const char *path,
     __wasi_timestamp_t atim,
-    __wasi_timestamp_t atim_ns,
     __wasi_timestamp_t mtim,
-    __wasi_timestamp_t mtim_ns,
     __wasi_fstflags_t fst_flags
 ){
     size_t path_len = strlen(path);
-    int32_t ret = __imported_wasi_snapshot_preview1_path_filestat_set_times((int32_t) fd, flags, (int32_t) path, (int32_t) path_len, (int64_t) atim, (int64_t) atim_ns, (int64_t) mtim, (int64_t) mtim_ns, fst_flags);
+    int32_t ret = __imported_wasi_snapshot_preview1_path_filestat_set_times((int32_t) fd, flags, (int32_t) path, (int32_t) path_len, (int64_t) atim, (int64_t) mtim, fst_flags);
     return (uint16_t) ret;
 }
 

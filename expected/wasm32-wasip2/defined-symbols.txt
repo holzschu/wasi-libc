@@ -1326,6 +1326,7 @@ tcp_tcp_socket_drop_own
 tdelete
 tdestroy
 telldir
+tempnam
 terminal_input_borrow_terminal_input
 terminal_input_terminal_input_drop_borrow
 terminal_input_terminal_input_drop_own
@@ -1347,6 +1348,9 @@ time
 timegm
 times
 timespec_get
+tmpfile
+tmpfile64
+tmpnam
 toascii
 tolower
 tolower_l

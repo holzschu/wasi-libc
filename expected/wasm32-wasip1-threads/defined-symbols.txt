@@ -1255,6 +1255,7 @@ tanl
 tdelete
 tdestroy
 telldir
+tempnam
 tfind
 tgamma
 tgammaf
@@ -1267,6 +1268,9 @@ time
 timegm
 times
 timespec_get
+tmpfile
+tmpfile64
+tmpnam
 toascii
 tolower
 tolower_l

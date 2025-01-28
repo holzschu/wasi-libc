@@ -6,7 +6,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include "syscall.h"
+// a-Shell: not needed
+#if 0
 #include "kstat.h"
+#endif
 
 #define MAXTRIES 100
 
@@ -17,7 +20,23 @@ char *tempnam(const char *dir, const char *pfx)
 	int try;
 	int r;
 
+#if 0
 	if (!dir) dir = P_tmpdir;
+#else
+	static char *tmpdir = NULL;
+	// a-Shell version:
+	if (!dir) {
+		if (tmpdir) dir = tmpdir; 
+		else {
+			if ((tmpdir = getenv("TMPDIR")) != NULL && *tmpdir != '\0')
+				;	/* got it */
+			else if ((tmpdir = getenv("TEMP")) != NULL && *tmpdir != '\0')
+				;	/* got it */
+			else tmpdir = "/tmp";
+			dir = tmpdir;
+		}
+	}
+#endif
 	if (!pfx) pfx = "temp";
 
 	dl = strlen(dir);
@@ -37,6 +56,7 @@ char *tempnam(const char *dir, const char *pfx)
 
 	for (try=0; try<MAXTRIES; try++) {
 		__randname(s+l-6);
+#if 0
 #ifdef SYS_lstat
 		r = __syscall(SYS_lstat, s, &(struct kstat){0});
 #else
@@ -44,6 +64,13 @@ char *tempnam(const char *dir, const char *pfx)
 			&(struct kstat){0}, AT_SYMLINK_NOFOLLOW);
 #endif
 		if (r == -ENOENT) return strdup(s);
+#else 
+		struct stat stat_buf;
+		if (stat(s, &stat_buf) != 0)
+			if (errno == ENOENT) {
+				return strdup(s);
+			}
+#endif 
 	}
 	return 0;
 }

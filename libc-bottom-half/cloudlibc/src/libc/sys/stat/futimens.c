@@ -24,8 +24,9 @@ int futimens(int fd, const struct timespec *times) {
   // iOS/a-Shell version: parameters are clamped to 32 bits even though everyone says 64 bits. 
   // So we send seconds and nanoseconds separately.
   // This will still cause a bug in 2038, unless JS+Wasm has moved to 64 bits by then.
-  // __wasi_errno_t error = __wasi_fd_filestat_set_times(fd, st_atim, st_mtim, flags);
-  __wasi_errno_t error = __wasi_fd_filestat_set_times(fd, times[0].tv_sec, times[0].tv_nsec, times[1].tv_sec, times[1].tv_nsec, flags);
+  // 10/2024: 64 bits transmission seems to work now, back to the original.
+  __wasi_errno_t error = __wasi_fd_filestat_set_times(fd, st_atim, st_mtim, flags);
+  // __wasi_errno_t error = __wasi_fd_filestat_set_times(fd, times[0].tv_sec, times[0].tv_nsec, times[1].tv_sec, times[1].tv_nsec, flags);
   if (error != 0) {
     errno = error;
     return -1;

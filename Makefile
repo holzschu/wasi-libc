@@ -233,7 +233,6 @@ LIBC_TOP_HALF_MUSL_SOURCES = \
                  $(wildcard $(LIBC_TOP_HALF_MUSL_SRC_DIR)/internal/*.c)) \
     $(filter-out %/flockfile.c %/funlockfile.c %/__lockfile.c %/ftrylockfile.c \
                  %/rename.c \
-                 %/tmpnam.c %/tmpfile.c %/tempnam.c \
                  %/popen.c %/pclose.c \
                  %/remove.c \
                  %/gets.c, \
@@ -266,6 +265,8 @@ LIBC_TOP_HALF_MUSL_SOURCES = \
                  %/cimagf.c %/cimag.c %cimagl.c, \
                  $(wildcard $(LIBC_TOP_HALF_MUSL_SRC_DIR)/complex/*.c)) \
     $(wildcard $(LIBC_TOP_HALF_MUSL_SRC_DIR)/crypt/*.c)
+# a-Shell: removed the filter-out for tmpfile (line 236): 
+#                 %/tmpnam.c %/tmpfile.c %/tempnam.c 
 
 ifeq ($(WASI_SNAPSHOT), p2)
 LIBC_TOP_HALF_MUSL_SOURCES += \
